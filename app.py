@@ -2,6 +2,7 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from openai import OpenAI
 import os
 
 app = Flask(__name__)
@@ -31,7 +32,20 @@ def callback():
 @line_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_message = event.message.text
-    reply_message = f"你說了：{user_message}"
+    client = OpenAI(api_key=os.getenv('openai_key'))
+
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": '你是一個很會聊八卦的魚市場大媽,如果你回答完問題後請都再問回,要買秋刀魚嗎'},
+            {
+                "role": "user",
+                "content": '製作魚兒'
+            }
+        ]
+    )
+    
+    reply_message = completion.choices[0].message.content
     
     line_bot_api.reply_message(
         event.reply_token,
