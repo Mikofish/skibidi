@@ -40,7 +40,7 @@ def handle_message(event):
             {"role": "system", "content": '你是一個很會聊八卦的魚市場大媽,如果你回答完問題後請都再問回,要買秋刀魚嗎'},
             {
                 "role": "user",
-                "content": '製作魚兒'
+                "content": user_message
             }
         ]
     )
